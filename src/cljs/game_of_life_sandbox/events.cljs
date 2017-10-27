@@ -1,6 +1,7 @@
 (ns game-of-life-sandbox.events
   (:require [re-frame.core :as re-frame]
-            [game-of-life-sandbox.db :as db]))
+            [game-of-life-sandbox.db :as db]
+            [game-of-life-sandbox.game-of-life :refer [step]]))
 
 (re-frame/reg-event-db
  ::initialize-db
@@ -35,3 +36,19 @@
      (if occupied?
        {:dispatch [:remove-cell mouse-coords]}
        {:dispatch [:add-cell mouse-coords]}))))
+
+(defn in-bounds? [board cell]
+  (let [max-x (quot (:width board) (:cell-size board))
+        max-y (quot (:height board) (:cell-size board))]
+    (and (< (:x cell) max-x)
+         (< (:y cell) max-y))))
+
+(re-frame/reg-event-fx
+ :iterate-cells
+ (fn [{:keys [db]} _]
+   (let [board (:board db)
+         next-cells (->> (step (get-in db [:board :cells]))
+                         (filter #(in-bounds? board %))
+                         (into #{}))]
+     {:db (assoc-in db [:board :cells] next-cells)
+      :draw-cells next-cells})))

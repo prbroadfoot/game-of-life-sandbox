@@ -30,6 +30,16 @@
     (set! (.-fillStyle @context) color)
     (.fillRect @context (* x cell-size) (* y cell-size) cell-size cell-size)))
 
+(defn clear-board []
+  (let [board (rf/subscribe [:board])]
+    (set! (.-fillStyle @context) "white")
+    (.fillRect @context 0 0 (:width @board) (:height @board))))
+
+(defn draw-cells [cells]
+  (clear-board)
+  (doseq [cell cells]
+    (draw "red" cell)))
+
 (rf/reg-fx
  :draw-cell
  (partial draw "red"))
@@ -37,3 +47,7 @@
 (rf/reg-fx
  :undraw-cell
  (partial draw "white"))
+
+(rf/reg-fx
+ :draw-cells
+ draw-cells)

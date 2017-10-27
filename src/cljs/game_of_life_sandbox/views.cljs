@@ -16,4 +16,7 @@
 (defn main-panel []
   [:div
    [Canvas]
-   [DBInfo]])
+   [DBInfo]
+   [:button
+    {:on-click #(re-frame/dispatch [:iterate-cells])}
+    "Iterate"]])
