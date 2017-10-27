@@ -10,17 +10,19 @@
         mouse-y (- (.-pageY event) (.-offsetTop canvas))]
     (rf/dispatch [:mouse-moved {:x mouse-x, :y mouse-y}])))
 
-(def Canvas
+(defn Canvas
+  []
   (r/create-class
    {:component-did-mount
     (fn [component]
       (reset! context (.getContext (r/dom-node component) "2d")))
 
     :reagent-render
-    (fn [] [:canvas {:width 400
-                     :height 400
-                     :on-mouse-move mouse-move-handler
-                     :on-click #(rf/dispatch [:mouse-clicked])}])}))
+    (let [board-dimensions (rf/subscribe [:board-dimensions])]
+      (fn [] [:canvas {:width (:width @board-dimensions)
+                       :height (:height @board-dimensions)
+                       :on-mouse-move mouse-move-handler
+                       :on-click #(rf/dispatch [:mouse-clicked])}]))}))
 
 (defn draw [color {:keys [x y] :as coords}]
   (let [board (rf/subscribe [:board])

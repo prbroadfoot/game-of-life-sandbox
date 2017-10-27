@@ -5,7 +5,7 @@
    [game-of-life-sandbox.subs :as subs]
    [game-of-life-sandbox.canvas :refer [Canvas context]]))
 
-(defn MouseCoords []
+(defn DBInfo []
   (let [mouse-coords (re-frame/subscribe [:mouse-coords])
         cells (re-frame/subscribe [:cells])]
     (fn []
@@ -17,7 +17,7 @@
   (let [name (re-frame/subscribe [::subs/name])]
     [:div
      [Canvas]
-     [MouseCoords]
-     [:button {:on-click (fn []
-                           (.fillRect @context 20 20 20 20))} "click"]
+     [DBInfo]
+     [:button #_{:on-click #(re-frame/dispatch [:resize-board
+                                              {:width 200 :height 200}])} "click"]
      [:div "Hello from " @name]]))

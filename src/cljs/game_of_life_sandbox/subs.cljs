@@ -17,6 +17,13 @@
    (:board db)))
 
 (re-frame/reg-sub
+ :board-dimensions
+ (fn [db]
+   (let [width (get-in db [:board :width])
+         height (get-in db [:board :height])]
+     {:width width, :height height})))
+
+(re-frame/reg-sub
  :cells
  (fn [db]
    (get-in db [:board :cells])))
