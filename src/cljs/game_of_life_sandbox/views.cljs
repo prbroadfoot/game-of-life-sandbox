@@ -6,9 +6,12 @@
    [game-of-life-sandbox.canvas :refer [Canvas context]]))
 
 (defn MouseCoords []
-  (let [mouse-coords (re-frame/subscribe [:mouse-coords])]
+  (let [mouse-coords (re-frame/subscribe [:mouse-coords])
+        cells (re-frame/subscribe [:cells])]
     (fn []
-      [:p "Coords" (str @mouse-coords)])))
+      [:div
+       [:p "Coords" (str @mouse-coords)]
+       [:p "Cells" (str @cells)]])))
 
 (defn main-panel []
   (let [name (re-frame/subscribe [::subs/name])]

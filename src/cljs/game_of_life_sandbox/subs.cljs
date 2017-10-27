@@ -15,3 +15,8 @@
  :board
  (fn [db]
    (:board db)))
+
+(re-frame/reg-sub
+ :cells
+ (fn [db]
+   (get-in db [:board :cells])))

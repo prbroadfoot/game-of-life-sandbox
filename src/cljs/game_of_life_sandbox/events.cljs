@@ -16,7 +16,22 @@
      (assoc-in db [:board :mouse-coords] {:x board-x, :y board-y}))))
 
 (re-frame/reg-event-fx
+ :add-cell
+ (fn [{:keys [db]} [_ coords]]
+   {:db (update-in db [:board :cells] conj coords)
+    :draw-cell coords}))
+
+(re-frame/reg-event-fx
+ :remove-cell
+ (fn [{:keys [db]} [_ coords]]
+   {:db (update-in db [:board :cells] disj coords)
+    :undraw-cell coords}))
+
+(re-frame/reg-event-fx
  :mouse-clicked
- (fn  [cofx _]
-   (let [mouse-coords (get-in cofx [:db :board :mouse-coords])]
-     {:draw-cell mouse-coords})))
+ (fn  [{:keys [db]} _]
+   (let [mouse-coords (get-in db [:board :mouse-coords])
+         occupied? (get-in db [:board :cells mouse-coords])]
+     (if occupied?
+       {:dispatch [:remove-cell mouse-coords]}
+       {:dispatch [:add-cell mouse-coords]}))))

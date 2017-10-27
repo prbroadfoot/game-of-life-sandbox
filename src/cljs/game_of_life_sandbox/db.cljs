@@ -4,4 +4,5 @@
   {:name "re-frame"
    :board {:width 400
            :height 400
-           :cell-size 20}})
+           :cell-size 20
+           :cells #{}}})
