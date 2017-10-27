@@ -5,3 +5,13 @@
  ::name
  (fn [db]
    (:name db)))
+
+(re-frame/reg-sub
+ :mouse-coords
+ (fn [db]
+   (get-in db [:board :mouse-coords])))
+
+(re-frame/reg-sub
+ :board
+ (fn [db]
+   (:board db)))
