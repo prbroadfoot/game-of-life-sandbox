@@ -22,3 +22,8 @@
  :cells
  (fn [db]
    (get-in db [:board :cells])))
+
+(re-frame/reg-sub
+ :canvas-origin
+ (fn [db]
+   (get-in db [:canvas-origin])))

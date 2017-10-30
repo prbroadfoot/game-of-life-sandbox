@@ -22,13 +22,20 @@
       (fn [] [:canvas {:width (:width @board-dimensions)
                        :height (:height @board-dimensions)
                        :on-mouse-move mouse-move-handler
-                       :on-click #(rf/dispatch [:mouse-clicked])}]))}))
+                       :on-click #(rf/dispatch [:mouse-clicked])
+                       :on-mouse-down #(rf/dispatch [:mouse-down])
+                       :on-mouse-up #(rf/dispatch [:mouse-up])}]))}))
 
 (defn draw [color {:keys [x y] :as coords}]
   (let [board (rf/subscribe [:board])
-        cell-size (:cell-size @board)]
+        cell-size (:cell-size @board)
+        canvas-origin (rf/subscribe [:canvas-origin])]
     (set! (.-fillStyle @context) color)
-    (.fillRect @context (* x cell-size) (* y cell-size) cell-size cell-size)))
+    (.fillRect @context
+               (* (+ x (:x @canvas-origin)) cell-size)
+               (* (+ y (:y @canvas-origin)) cell-size)
+               cell-size
+               cell-size)))
 
 (defn clear-board []
   (let [board (rf/subscribe [:board])]

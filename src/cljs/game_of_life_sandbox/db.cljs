@@ -5,5 +5,6 @@
            :height 700
            :cell-size 20
            :cells #{}}
+   :canvas-origin {:x 0 :y 0}
    :tick false
    :tick-interval 30})

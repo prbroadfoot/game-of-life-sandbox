@@ -19,4 +19,5 @@
    #_[DBInfo]
    [:button {:on-click #(re-frame/dispatch [:toggle-tick])} "Iterate"]
    [:button {:on-click #(re-frame/dispatch [:zoom-out])} "Zoom Out"]
-   [:button {:on-click #(re-frame/dispatch [:zoom-in])} "Zoom In"]])
+   [:button {:on-click #(re-frame/dispatch [:zoom-in])} "Zoom In"]
+   [:button {:on-click #(re-frame/dispatch [:change-canvas-origin {:x -1 :y -1}])} "Change Canvas Origin"]])

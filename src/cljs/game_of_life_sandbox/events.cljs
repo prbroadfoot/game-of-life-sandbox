@@ -8,13 +8,15 @@
  (fn  [_ _]
    db/default-db))
 
-(re-frame/reg-event-db
+(re-frame/reg-event-fx
  :mouse-moved
- (fn  [db [_ {:keys [x y]}]]
+ (fn  [{:keys [db]} [_ {:keys [x y]}]]
    (let [cell-size (get-in db [:board :cell-size])
-         board-x (quot x cell-size)
-         board-y (quot y cell-size)]
-     (assoc-in db [:board :mouse-coords] {:x board-x, :y board-y}))))
+         canvas-origin (get db :canvas-origin)
+         board-x (- (quot x cell-size) (:x canvas-origin))
+         board-y (- (quot y cell-size) (:y canvas-origin))
+         mouse-down (:mouse-down db)]
+     {:db (assoc-in db [:board :mouse-coords] {:x board-x, :y board-y})})))
 
 (re-frame/reg-event-fx
  :add-cell
@@ -27,6 +29,17 @@
  (fn [{:keys [db]} [_ coords]]
    {:db (update-in db [:board :cells] disj coords)
     :undraw-cell coords}))
+
+(re-frame/reg-event-db
+ :mouse-down
+ (fn [db]
+   (let [mouse-coords (get-in db [:board :mouse-coords])]
+     (assoc db :mouse-down true))))
+
+(re-frame/reg-event-db
+ :mouse-up
+ (fn [db _]
+   (assoc db :mouse-down false)))
 
 (re-frame/reg-event-fx
  :mouse-clicked
@@ -75,4 +88,10 @@
  :zoom-in
  (fn [{:keys [db]} _]
    {:db (update-in db [:board :cell-size] #(Math/ceil (* % 1.5)))
+    :draw-cells (get-in db [:board :cells])}))
+
+(re-frame/reg-event-fx
+ :change-canvas-origin
+ (fn [{:keys [db]} [_ new-origin]]
+   {:db (assoc db :canvas-origin new-origin)
     :draw-cells (get-in db [:board :cells])}))
