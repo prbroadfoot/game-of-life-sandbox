@@ -44,11 +44,35 @@
          (< (:y cell) max-y))))
 
 (re-frame/reg-event-fx
+ :toggle-tick
+ (fn [{:keys [db]} _]
+   (if (:tick db)
+     {:db (update db :tick not)}
+     {:db (update db :tick not)
+      :dispatch [:iterate-cells]} ;; what if dispatch happens before db update?
+     )))
+
+(re-frame/reg-event-fx
  :iterate-cells
  (fn [{:keys [db]} _]
-   (let [board (:board db)
-         next-cells (->> (step (get-in db [:board :cells]))
-                         (filter #(in-bounds? board %))
-                         (into #{}))]
-     {:db (assoc-in db [:board :cells] next-cells)
-      :draw-cells next-cells})))
+   (let [tick (:tick db)
+         board (:board db)
+         next-cells (step (get-in db [:board :cells]))]
+     (if tick
+       {:db (assoc-in db [:board :cells] next-cells)
+        :draw-cells next-cells
+        :dispatch-later [{:ms (:tick-interval db)
+                          :dispatch [:iterate-cells]}]}
+       {}))))
+
+(re-frame/reg-event-fx
+ :zoom-out
+ (fn [{:keys [db]} _]
+   {:db (update-in db [:board :cell-size] #(max (quot % 1.5) 1))
+    :draw-cells (get-in db [:board :cells])}))
+
+(re-frame/reg-event-fx
+ :zoom-in
+ (fn [{:keys [db]} _]
+   {:db (update-in db [:board :cell-size] #(Math/ceil (* % 1.5)))
+    :draw-cells (get-in db [:board :cells])}))

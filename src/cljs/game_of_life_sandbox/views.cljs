@@ -16,7 +16,7 @@
 (defn main-panel []
   [:div
    [Canvas]
-   [DBInfo]
-   [:button
-    {:on-click #(re-frame/dispatch [:iterate-cells])}
-    "Iterate"]])
+   #_[DBInfo]
+   [:button {:on-click #(re-frame/dispatch [:toggle-tick])} "Iterate"]
+   [:button {:on-click #(re-frame/dispatch [:zoom-out])} "Zoom Out"]
+   [:button {:on-click #(re-frame/dispatch [:zoom-in])} "Zoom In"]])
