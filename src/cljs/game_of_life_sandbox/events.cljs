@@ -29,6 +29,13 @@
     :draw-cell coords}))
 
 (re-frame/reg-event-fx
+ :add-cells
+ (fn [{:keys [db]} [_ coords]]
+   (let [new-db (update-in db [:board :cells] into coords)]
+     {:db new-db
+      :draw-cells (get-in new-db [:board :cells])})))
+
+(re-frame/reg-event-fx
  :remove-cell
  (fn [{:keys [db]} [_ coords]]
    {:db (update-in db [:board :cells] disj coords)
@@ -56,7 +63,7 @@
      (when-not (:shift db)
        (if occupied?
          {:dispatch [:remove-cell mouse-coords]}
-         {:dispatch [:add-cell mouse-coords]})))))
+         {:dispatch [:add-cells (db/mouse-piece-coords db)]})))))
 
 (defn in-bounds? [board cell]
   (let [max-x (quot (:width board) 4)
@@ -111,3 +118,8 @@
  (fn [{:keys [db]}]
    {:db (update-in db [:board :cells] empty)
     :draw-cells (get-in db [:board :cells])}))
+
+(re-frame/reg-event-db
+ :change-piece-type
+ (fn [db [_ piece-coords]]
+   (assoc-in db [:board :piece-coords] piece-coords)))
