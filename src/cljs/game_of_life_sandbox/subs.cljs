@@ -27,3 +27,8 @@
  :canvas-origin
  (fn [db]
    (get-in db [:canvas-origin])))
+
+(re-frame/reg-sub
+ :tick
+ (fn [db]
+   (get db :tick)))

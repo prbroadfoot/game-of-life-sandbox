@@ -60,7 +60,7 @@
 
 (defn in-bounds? [board cell]
   (let [max-x (quot (:width board) 4)
-        max-y (quot (:height board) 4)]
+        max-y (quot (:height board) 5)]
     (and (< (Math/abs (:x cell)) max-x)
          (< (Math/abs (:y cell)) max-y))))
 
@@ -89,7 +89,7 @@
 (re-frame/reg-event-fx
  :zoom-out
  (fn [{:keys [db]} _]
-   {:db (update-in db [:board :cell-size] #(max (quot % 1.2) 2))
+   {:db (update-in db [:board :cell-size] #(max (quot % 1.2) 4))
     :draw-cells (get-in db [:board :cells])}))
 
 (re-frame/reg-event-fx

@@ -13,11 +13,18 @@
        [:p "Coords" (str @mouse-coords)]
        [:p "Cells" (str @cells)]])))
 
+(defn iterate-btn []
+  (let [tick (re-frame/subscribe [:tick])]
+    (fn []
+      [:button {:on-click #(re-frame/dispatch [:toggle-tick])
+                :style {:width "80px"}}
+       (if @tick "Pause" "Start")])))
+
 (defn main-panel []
-  [:div
+  [:div.main-panel
    [Canvas]
    #_[DBInfo]
-   [:button {:on-click #(re-frame/dispatch [:toggle-tick])} "Iterate"]
-   [:button {:on-click #(re-frame/dispatch [:zoom-out])} "Zoom Out"]
-   [:button {:on-click #(re-frame/dispatch [:zoom-in])} "Zoom In"]
-   [:button {:on-click #(re-frame/dispatch [:change-canvas-origin {:x -1 :y -1}])} "Change Canvas Origin"]])
+   [:div.control-buttons
+    [iterate-btn]
+    [:button {:on-click #(re-frame/dispatch [:zoom-out])} "Zoom Out"]
+    [:button {:on-click #(re-frame/dispatch [:zoom-in])} "Zoom In"]]])
