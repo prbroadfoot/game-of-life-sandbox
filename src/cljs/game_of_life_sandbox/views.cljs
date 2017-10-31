@@ -26,5 +26,6 @@
    #_[DBInfo]
    [:div.control-buttons
     [iterate-btn]
+    [:button {:on-click #(re-frame/dispatch [:clear-board])} "Clear"]
     [:button {:on-click #(re-frame/dispatch [:zoom-out])} "Zoom Out"]
     [:button {:on-click #(re-frame/dispatch [:zoom-in])} "Zoom In"]]])

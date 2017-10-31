@@ -105,3 +105,9 @@
                :mouse-down-window-coords (get-in db [:board :mouse-window-coords])
                :shift true)
     :draw-cells (get-in db [:board :cells])}))
+
+(re-frame/reg-event-fx
+ :clear-board
+ (fn [{:keys [db]}]
+   {:db (update-in db [:board :cells] empty)
+    :draw-cells (get-in db [:board :cells])}))
